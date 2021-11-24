@@ -1,22 +1,20 @@
-#load("LSGenerators.sage")
-#   put Dropbox/Code/H2Plex.sage
 
 
 ##############################################################
-# (*\textbf{The technical part}*)
-# (*\textbf{Input:}*) $S$, a list of lists giving a latin square; Path, a 
-# list giving a 2-bounded path in $K_{n,n}(S)$; CC, an array 
+# The Technical Part:
+# Input: S, a list of lists giving a latin square; Path, a 
+# list giving a 2-bounded path in K_{n,n}(S); CC, an array 
 # documenting how many times each color has been used in Path; 
 # aR and aC, sets giving the rows and columns, respectively, 
-# not used by Path; $n$, the order of $S$; $k$, the length of Path
-# (*\textbf{Output:}*) if Path can be extended by 1, (True,P) where P
+# not used by Path; n, the order of S; k, the length of Path
+# Output: if Path can be extended by 1, (True,P) where P
 # is the extension. Otherwise, (False,Path)
 ##############################################################
 
 def Ham2PlexUtil(S,Path,CC,aR,aC,n,k):
 
     ###########################################################
-    # (*\textbf{Base case:}*) if Path has length 2n-1, check that the edge
+    # Base Case: if Path has length 2n-1, check that the edge
     # connecting its end to S[0][0] has the correct symbol
     ###########################################################
 
@@ -72,9 +70,9 @@ def Ham2PlexUtil(S,Path,CC,aR,aC,n,k):
         return False,Path
 
 ###########################################################
-# (*\textbf{The top part}*)
-# (*\textbf{Input:}*) $S$, a list of lists giving a latin square
-# (*\textbf{Output:}*) A Hamilton 2-plex in $S$, if one exists, otherwise 
+# The Top Part
+# Input: $S$, a list of lists giving a latin square
+# Output: A Hamilton 2-plex in $S$, if one exists, otherwise 
 # False
 ###########################################################
 
@@ -93,102 +91,39 @@ def Ham2Plex(S):
 
 
 
-#######################################
-#Old stuff you could maybe throw out?
-#######################################
 
-#def IsSafeRow(S,Path,CC,r,k):
-#    c = Path[k-1][1]
-#    s = S[r][c]
-#    if CC[s]==2:
-#        return False
-#    else:
-#        return True
+#######################################################
+# A method for converting the string representations
+# in B. McKay's database 
+# (https://users.cecs.anu.edu.au/~bdm/data/latin.html)
+# to a 2-D Python array
+########################################################
 
-#def IsSafeCol(S,Path,CC,c,k):
-#    r = Path[k-1][0]
-#    s = S[r][c]
-#    if CC[s]==2:
-#        return False
-#    else:
-#        return True
+def Coerce(n, ls):
+    output = []
+    for i in range(n):
+        output.append([int(x) for x in ls[n*i:n*i+n]])
+    return output
 
+#######################################################
+# A method for testing if all latin squares in path
+# have a Hamilton 2-plex, and writing an H2-plex
+# for each square in path to the file out
+########################################################
 
-
-#############################################
-# A method testing everything in McKay's list and
-# writing the output H2Plex to RawData.txt
-# Current version specific to n=8
-#############################################
-
-def Coerce(n, str):
-    s = str[0:n^2]
-    m = matrix(n,n,list([int(x) for x in s]))
-    return [list(r) for r in m.rows()]
-
-
-def ExhaustiveTest(n):
-    LS8 = open('Documents/Research/CombinatorialData/latin_is8.txt')
-    o = open('Desktop/8Data.txt','w')
-    count=0
+def ExhaustiveTest(n,path,out):
+    LS = open(path)
+    o = open(out,'w')
     Check=True
-    for line in LS8:
+    for line in LS:
         if Check:
-            M=Coerce(8,line)
+            M=Coerce(n,line)
             H = Ham2Plex(M)
             o.write(str(H)+'\n')
-            count+=1
-            print(count)
         else:
             break
 
-#############################
-#Get quadrant sequence from a
-# sequence of cells in 2-step type LS
-#############################
-
-def seqit(S,lisst): 
-    n = len(S)
-    output = [] 
-    for pair in lisst: 
-        c = pair[1] 
-        s = S[pair[0]][pair[1]] 
-        if c<n/2 and s<n/2: 
-            output.append(1) 
-        if c>=n/2 and s>=n/2: 
-            output.append(2) 
-        if c<n/2 and s>=n/2: 
-            output.append(3) 
-        if c>=n/2 and s<n/2: 
-            output.append(4)
-    if output[2*n-2] == 3 or output[2*n-2]==4:
-        output.append(3)
-    else:
-        output.append(1)
-    return output 
 
 
-def drawit(seq): 
-    n = (len(seq)+1)/2 
-    M = [[0 for i in range(n)] for j in range(n)] 
-    for (a,b) in seq: 
-        M[a][b]=1
-    for i in range(n):
-        if sum(M[i]) <2:
-            M[i][0]=1
-            break
-    M=matrix(M) 
-    M.subdivide(n/2,n/2) 
-    return M 
 
-            
 
-def changes(seq): 
-    count = 0 
-    n = len(seq) 
-    for i in range(n-1): 
-        if seq[i]!=seq[i+1]: 
-            count+=1 
-    if seq[n-1]==3: 
-        count+=1 
-    return count 
