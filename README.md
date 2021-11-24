@@ -1,4 +1,4 @@
-# latinSquares
+# Latin Squares
 A collection of methods concerning the existence of k-plexes in latin squares to be run in [Sage](sagemath.org)
 
 The file H2Plex.sage contains the code necessary to determine which of the latin squares in a given set contain Hamilton 2-plexes. For a the definition of latin square, Hamilton 2-plex, and any other undefined terms see [my PhD thesis](https://theses.lib.sfu.ca/file/thesis/6599), for which this code was written.
